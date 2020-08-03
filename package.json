@@ -4,6 +4,7 @@
   "description": "",
   "main": "handler.js",
   "scripts": {
+    "start": "sls offline start --port 4000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/rkclark/new-dogs-serverless-notifier/issues"
   },
-  "homepage": "https://github.com/rkclark/new-dogs-serverless-notifier#readme"
+  "homepage": "https://github.com/rkclark/new-dogs-serverless-notifier#readme",
+  "devDependencies": {
+    "serverless-offline": "^6.5.0"
+  },
+  "dependencies": {
+    "aws-lambda": "^1.0.6",
+    "uuid": "^8.3.0"
+  }
 }
