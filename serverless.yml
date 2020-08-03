@@ -26,7 +26,7 @@ provider:
 
 # you can overwrite defaults here
 #  stage: dev
-#  region: us-east-1
+ region: eu-west-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -43,6 +43,16 @@ provider:
 #          - - "arn:aws:s3:::"
 #            - "Ref" : "ServerlessDeploymentBucket"
 #            - "/*"
+
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+    Resource: "arn:aws:dynamodb:eu-west-1:AKIAYBOO4FZ5NHKKYW7Z:table/dogs"
 
 # you can define service wide environment variables here
 #  environment:
@@ -111,3 +121,11 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+resources:
+  # DynamoDB
+  - ${file(resources/dynamo-db.yml)}
