@@ -9,22 +9,17 @@ module.exports.scrapeDogs = async () => {
       ],
     },
   };
-  
+
   const getDogs = async () => {
     let dogs = await Promise.all([
       ...config.dogsTrust.breeds.map(async (breed) => {
         return getDogsTrustDogs(breed);
       }),
     ]);
-  
+
     dogs = dogs.flat();
     console.log(dogs, dogs.length);
   };
-  
+
   getDogs();
-  
 };
-
-
-
-
