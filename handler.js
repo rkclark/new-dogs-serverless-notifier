@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const getDogsTrustDogs = require('./services/dogsTrust.js');
 const { putItem } = require('./dynamoActions/index.js');
+const { sendSMS } = require('./twilio/index.js');
 
 module.exports.scrapeDogs = async () => {
   const config = {
@@ -23,18 +24,21 @@ module.exports.scrapeDogs = async () => {
     return results;
   };
 
-  const dogs = getDogs();
+  const dogs = await getDogs();
 
-  (await dogs).forEach(async (dog) => {
-    try {
-      await putItem(dog);
-      console.log(`Inserted new dog ${dog.name} (id: ${dog.id})`);
-    } catch (err) {
-      if (err.code === 'ConditionalCheckFailedException') {
-        console.log(`Dog ${dog.name} (id: ${dog.id}) already exists.`);
-      } else {
-        console.error(err);
+  await Promise.all(
+    dogs.map(async (dog) => {
+      try {
+        await putItem(dog);
+        console.log(`Inserted new dog ${dog.name} (id: ${dog.id})`);
+        await sendSMS(`New ${dog.breed} "${dog.name}" found! ${dog.link}`);
+      } catch (err) {
+        if (err.code === 'ConditionalCheckFailedException') {
+          console.log(`Dog ${dog.name} (id: ${dog.id}) already exists.`);
+        } else {
+          console.error(err);
+        }
       }
-    }
-  });
+    }),
+  );
 };

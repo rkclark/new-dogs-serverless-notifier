@@ -52,11 +52,17 @@ iamRoleStatements:
       - dynamodb:Scan
       - dynamodb:GetItem
       - dynamodb:PutItem
-    Resource: "arn:aws:dynamodb:eu-west-1:AKIAYBOO4FZ5NHKKYW7Z:table/dogs"
+    Resource: "arn:aws:dynamodb:eu-west-1:${env:IAM_USER_ID}:table/dogs"
 
 # you can define service wide environment variables here
 #  environment:
 #    variable1: value1
+
+environment:
+  TWILIO_ID: ${env:TWILIO_ID}
+  TWILIO_TOKEN: ${env:TWILIO_TOKEN}
+  TWILIO_FROM_PHONE_NUMBER: ${env:TWILIO_FROM_PHONE_NUMBER}
+  TWILIO_TO_PHONE_NUMBER: ${env:TWILIO_TO_PHONE_NUMBER}
 
 # you can add packaging information here
 #package:
@@ -71,7 +77,7 @@ functions:
   scrapeDogs:
     handler: handler.scrapeDogs
     events:
-      - schedule: rate(1 hour)
+      - schedule: rate(2 hours)
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -127,6 +133,7 @@ functions:
 plugins:
   - serverless-webpack
   - serverless-offline
+  - serverless-dotenv-plugin
 
 resources:
   # DynamoDB
