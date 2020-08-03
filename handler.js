@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 const getDogsTrustDogs = require('./services/dogsTrust.js');
+const { putItem } = require('./dynamoActions/index.js');
 
 module.exports.scrapeDogs = async () => {
   const config = {
@@ -11,15 +13,28 @@ module.exports.scrapeDogs = async () => {
   };
 
   const getDogs = async () => {
-    let dogs = await Promise.all([
+    let results = await Promise.all([
       ...config.dogsTrust.breeds.map(async (breed) => {
         return getDogsTrustDogs(breed);
       }),
     ]);
 
-    dogs = dogs.flat();
-    console.log(dogs, dogs.length);
+    results = results.flat();
+    return results;
   };
 
-  getDogs();
+  const dogs = getDogs();
+
+  (await dogs).forEach(async (dog) => {
+    try {
+      await putItem(dog);
+      console.log(`Inserted new dog ${dog.name} (id: ${dog.id})`);
+    } catch (err) {
+      if (err.code === 'ConditionalCheckFailedException') {
+        console.log(`Dog ${dog.name} (id: ${dog.id}) already exists.`);
+      } else {
+        console.error(err);
+      }
+    }
+  });
 };
