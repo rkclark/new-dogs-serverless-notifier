@@ -68,8 +68,10 @@ iamRoleStatements:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  crawl:
+    handler: scrapeDogs
+    events:
+      - schedule: rate(1 hour)
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
