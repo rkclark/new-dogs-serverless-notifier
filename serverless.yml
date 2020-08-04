@@ -5,15 +5,11 @@ provider:
   runtime: nodejs12.x
   region: eu-west-1
 
-iamRoleStatements:
-  - Effect: Allow
-    Action:
-      - dynamodb:DescribeTable
-      - dynamodb:Query
-      - dynamodb:Scan
-      - dynamodb:GetItem
-      - dynamodb:PutItem
-    Resource: "arn:aws:dynamodb:eu-west-1:${env:IAM_USER_ID}:table/dogs"
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:eu-west-1:*:table/dogs"
 
 environment:
   TWILIO_ID: ${env:TWILIO_ID}
