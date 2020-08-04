@@ -1,4 +1,5 @@
 const slsw = require('serverless-webpack');
+const path = require('path');
 
 module.exports = {
   target: 'node',
@@ -8,10 +9,11 @@ module.exports = {
   optimization: {
     minimize: false,
   },
-  devtool: 'inline-cheap-module-source-map',
-  externals: {
-    canvas: 'commonjs canvas',
+  resolve: {
+    // We need canvas to be faked or it causes errors due to how it is dynamically imported by JSDOM
+    modules: [path.resolve(__dirname, 'fakeModules'), 'node_modules'],
   },
+  devtool: 'inline-cheap-module-source-map',
   module: {
     rules: [
       {
